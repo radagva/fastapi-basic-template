@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends
-from app.config.database import Session, get_database
+from sqlalchemy.orm import Session
+from app.config.database import get_database
 from app.core.dto.users import User
 from app.core.models import UserModel
 from app.utils.security import auth_required

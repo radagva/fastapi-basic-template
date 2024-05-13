@@ -1,8 +1,8 @@
+import uuid
+from typing import List
 from pydantic import UUID4
 from sqlalchemy import UUID, ForeignKey, String, DateTime, func
 from datetime import datetime
-import uuid
-
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.config.database import Base
@@ -23,11 +23,11 @@ class UserModel(Base):
         DateTime, nullable=False, server_default=func.now(), onupdate=datetime.now
     )
 
-    confessions = relationship("ConfessionModel", back_populates="user")
+    tasks: Mapped[List["TaskModel"]] = relationship("TaskModel", back_populates="user")
 
 
-class ConfessionModel(Base):
-    __tablename__ = "confessions"
+class TaskModel(Base):
+    __tablename__ = "tasks"
 
     id: Mapped[UUID4] = mapped_column(
         UUID, index=True, primary_key=True, default=uuid.uuid4
@@ -42,4 +42,4 @@ class ConfessionModel(Base):
         DateTime, nullable=False, server_default=func.now(), onupdate=datetime.now
     )
 
-    user = relationship("UserModel", back_populates="confessions")
+    user: Mapped[UserModel] = relationship("UserModel", back_populates="tasks")

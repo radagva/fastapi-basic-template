@@ -1,6 +1,7 @@
 from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException
-from app.core.dto.auth import LoginDTO
+from sqlalchemy.orm import Session
+from app.core.dto.auth import LoginDTO, RegisterDTO
 from app.core.dto.users import User
 from app.utils.security import (
     auth_required,
@@ -8,7 +9,7 @@ from app.utils.security import (
     verify_password,
     create_access_token,
 )
-from app.config.database import Session, get_database
+from app.config.database import get_database
 from app.core.models import UserModel
 
 router = APIRouter(prefix="/auth")
@@ -28,8 +29,8 @@ def login(input: LoginDTO, database: Session = Depends(get_database)):
 
 
 @router.post("/register")
-def register(input: LoginDTO, database: Session = Depends(get_database)):
-    user = UserModel(**input.model_dump(), name="Angel Rada")
+def register(input: RegisterDTO, database: Session = Depends(get_database)):
+    user = UserModel(**input.model_dump())
     user.password = hash_password(input.password)
     database.add(user)
     database.commit()
